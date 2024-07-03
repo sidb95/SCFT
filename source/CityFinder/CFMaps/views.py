@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render # type: ignore
 from .models import City
 
-filename = "indianCities.csv"
+filename = "worldcities.csv"
+index = [0, 2, 3]
 
 class CFMaps:
   
@@ -25,9 +26,9 @@ class CFMaps:
         long = ""
         while line != "":
             lineSplit = line.split(',')
-            cityname = lineSplit[0]
-            lat = lineSplit[1]
-            long = lineSplit[2]
+            cityname = lineSplit[index[0]]
+            lat = lineSplit[index[1]]
+            long = lineSplit[index[2]]
             uid = len(City.objects.all()) + 1
             q = City.objects.create(uid=uid, cityname=cityname, lat=lat, long=long)
             q.save()

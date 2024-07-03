@@ -31,6 +31,9 @@
         <input name="cityname" placeholder="city name">
         <input class="btn btn-primary" value="submit" type="submit">
     </form>
+    <form action="">
+
+    </form>
     <span id="cityname">{{ cityname }}</span>
     <span id="latlng">{{ latlng }}</span>
     <div id="map" style="position: unset; text-align: center;"></div>
@@ -41,9 +44,6 @@
     <script>
         // Initialize and add the map
         let map;
-
-        async function initMap() {
-        // The location of Uluru
         let latlng = document.getElementById('latlng').innerText;
         let i = 2;
         let lat = "";
@@ -57,27 +57,46 @@
             lng += latlng[i];
             i += 1;
         }
-        const position = { lat: parseFloat(lat), lng: parseFloat(lng) };
-        // Request needed libraries.
-        //@ts-ignore
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        async function initMap() {
+            const position = { lat: parseFloat(lat), lng: parseFloat(lng) };
+            // Request needed libraries.
+            //@ts-ignore
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-        // The map, centered at Uluru
-        map = new Map(document.getElementById("map"), {
-            zoom: 4,
-            center: position,
-            mapId: "DEMO_MAP_ID",
-        });
+            // The map, centered at Uluru
+            map = new Map(document.getElementById("map"), {
+                zoom: 4,
+                center: position,
+                mapId: "DEMO_MAP_ID",
+            });
 
-        let cityname = document.getElementById('cityname').innerText
-        const marker = new AdvancedMarkerElement({
-            map: map,
-            position: position,
-            title: cityname,
-        });
+            let cityname = document.getElementById('cityname').innerText
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: position,
+                title: cityname,
+            });
         }
-
         initMap();
+        //
+        function run() {
+
+            // Creating Our XMLHttpRequest object 
+            let xhr = new XMLHttpRequest();
+            // Making our connection  
+            let url = 'https://maps.googleapis.com/maps/api/elevation/json?locations=' + lat+ '%2C' + lng +'&key=';
+            xhr.open("GET", url, true);
+            xhr.setRequestHeader()
+            // function execute after request is successful 
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                }
+            }
+            // Sending our request 
+            xhr.send();
+        }
+        run();
     </script>
 </body>
