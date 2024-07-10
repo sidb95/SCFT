@@ -1,17 +1,18 @@
 from django.shortcuts import render # type: ignore
 from .models import City
+import random
 
 filename = "worldcities.csv"
-index = [0, 2, 3]
 
 class CFMaps:
   
   def __init__(self):
     self.flag = True
   
-  def getLatLong(self, cityname):
+  def getLatLong(self, name):
      dictLL = {}
-     city1 = City.objects.get(cityname=cityname)
+     city1 = City.objects.get(cityname=name)
+     dictLL['cityname'] = city1.cityname
      dictLL['lat'] = city1.lat
      dictLL['lng'] = city1.long
      return dictLL
@@ -26,9 +27,10 @@ class CFMaps:
         long = ""
         while line != "":
             lineSplit = line.split(',')
-            cityname = lineSplit[index[0]]
-            lat = lineSplit[index[1]]
-            long = lineSplit[index[2]]
+            cityname = str(lineSplit[0][1:-1])
+            print(cityname)
+            lat = lineSplit[2]
+            long = lineSplit[3]
             uid = len(City.objects.all()) + 1
             q = City.objects.create(uid=uid, cityname=cityname, lat=lat, long=long)
             q.save()
@@ -60,6 +62,9 @@ def index(request):
     if check_empty(params, 'cityname'):
         pass
     else:
-        latlng = cfmap1.getLatLong(params['cityname'])
-        context = {'cityname': params['cityname'], 'latlng':[latlng['lat'], latlng['lng']]}
+        cities = City.objects.all()
+        for city in cities:
+           print(city.cityname)
+        latlng = cfmap1.getLatLong(str(params['cityname']))
+        context = {'cityname': latlng['cityname'], 'latlng':[latlng['lat'], latlng['lng']]}
     return render(request, 'CFMaps/index.html', context)
